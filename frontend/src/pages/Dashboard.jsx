@@ -25,22 +25,22 @@ function Dashboard() {
         <p style={styles.sub}>Welcome to LexOS — your AI legal assistant</p>
 
         <div style={styles.grid}>
-          <div style={styles.card}>
+          <div style={styles.card} onClick={() => navigate('/threatradar')}>
             <div style={styles.cardIcon}>📡</div>
             <div style={styles.cardTitle}>ThreatRadar</div>
             <div style={styles.cardDesc}>Track document deadlines and get alerts</div>
           </div>
-          <div style={styles.card}>
+          <div style={styles.card} onClick={() => navigate('/shieldmode')}>
             <div style={styles.cardIcon}>🛡️</div>
             <div style={styles.cardTitle}>ShieldMode</div>
             <div style={styles.cardDesc}>Know your rights instantly</div>
           </div>
-          <div style={styles.card}>
+          <div style={styles.card} onClick={() => navigate('/quickcomplaint')}>
             <div style={styles.cardIcon}>📝</div>
             <div style={styles.cardTitle}>QuickComplaint</div>
             <div style={styles.cardDesc}>Draft a legal complaint with AI</div>
           </div>
-          <div style={styles.card}>
+          <div style={styles.card} onClick={() => navigate('/forgescan')}>
             <div style={styles.cardIcon}>🔍</div>
             <div style={styles.cardTitle}>ForgeScan</div>
             <div style={styles.cardDesc}>Analyse documents for red flags</div>

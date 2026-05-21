@@ -3,6 +3,10 @@ import { useAuth } from './context/AuthContext'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
+import ThreatRadar from './pages/ThreatRadar'
+
+
+
 
 function App() {
   const { user } = useAuth()
@@ -13,8 +17,11 @@ function App() {
       <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
       <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
       <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
+      <Route path="/threatradar" element={user ? <ThreatRadar /> : <Navigate to="/login" />} />
     </Routes>
   )
 }
 
+
+// Inside Routes add:
 export default App
