@@ -4,6 +4,8 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import ThreatRadar from './pages/ThreatRadar'
+import ShieldMode from './pages/ShieldMode'
+
 
 
 
@@ -18,6 +20,7 @@ function App() {
       <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
       <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
       <Route path="/threatradar" element={user ? <ThreatRadar /> : <Navigate to="/login" />} />
+      <Route path="/shieldmode" element={user ? <ShieldMode /> : <Navigate to="/login" />} />
     </Routes>
   )
 }
