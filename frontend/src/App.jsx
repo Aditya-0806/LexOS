@@ -5,9 +5,8 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import ThreatRadar from './pages/ThreatRadar'
 import ShieldMode from './pages/ShieldMode'
-
-
-
+import QuickComplaint from './pages/QuickComplaint'
+import ForgeScan from './pages/ForgeScan'
 
 
 function App() {
@@ -21,6 +20,11 @@ function App() {
       <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
       <Route path="/threatradar" element={user ? <ThreatRadar /> : <Navigate to="/login" />} />
       <Route path="/shieldmode" element={user ? <ShieldMode /> : <Navigate to="/login" />} />
+      <Route path="/quickcomplaint" element={user ? <QuickComplaint /> : <Navigate to="/login" />} />
+      
+<Route path="/forgescan" element={user ? <ForgeScan /> : <Navigate to="/login" />} />
+
+
     </Routes>
   )
 }
