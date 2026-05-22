@@ -9,9 +9,27 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Test route
+// Routes
+const authRoutes = require('./routes/auth');
+const documentRoutes = require('./routes/documents');
+const complaintRoutes = require('./routes/complaint');
+const forgescanRoutes = require('./routes/forgescan');
+const protect = require('./middleware/authMiddleware');
+
+
+app.use('/api/auth', authRoutes);
+app.use('/api/documents', documentRoutes);
+app.use('/api/complaint', complaintRoutes);
+app.use('/api/forgescan', forgescanRoutes);
+
+
+// Test routes
 app.get('/', (req, res) => {
   res.json({ message: 'LexOS Backend Running ✅' });
+});
+
+app.get('/api/protected', protect, (req, res) => {
+  res.json({ message: 'Access granted ✅', userId: req.userId });
 });
 
 // MongoDB Connection
@@ -25,16 +43,3 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// Routes
-const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
-
-const protect = require('./middleware/authMiddleware');
-
-// Protected test route
-app.get('/api/protected', protect, (req, res) => {
-  res.json({ message: 'Access granted ✅', userId: req.userId });
-});
-
-const documentRoutes = require('./routes/documents');
-app.use('/api/documents', documentRoutes);
