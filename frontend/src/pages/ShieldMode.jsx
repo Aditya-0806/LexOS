@@ -1,5 +1,9 @@
-import { useState } from 'react'
+
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import API from '../utils/api'
+
+
 
 const scenarios = {
   traffic_stop: {
@@ -181,6 +185,219 @@ const scenarios = {
   }
 }
 
+function LiveGuidance({ scenario }) {
+  const [listening, setListening] = useState(false)
+  const [transcript, setTranscript] = useState('')
+  const [guidance, setGuidance] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [language, setLanguage] = useState('en')
+  const [showLanguage, setShowLanguage] = useState(true)
+  const recognitionRef = useRef(null)
+
+  const languages = [
+    { code: 'en-IN', label: 'English', value: 'en' },
+    { code: 'hi-IN', label: 'हिंदी', value: 'hi' },
+    { code: 'mr-IN', label: 'मराठी', value: 'mr' },
+    { code: 'gu-IN', label: 'ગુજરાતી', value: 'gu' },
+    { code: 'ta-IN', label: 'தமிழ்', value: 'ta' },
+    { code: 'te-IN', label: 'తెలుగు', value: 'te' },
+  ]
+
+  const startListening = () => {
+    setShowLanguage(false)
+    setListening(true)
+    setGuidance('')
+    setTranscript('')
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+
+    if (!SpeechRecognition) {
+      alert('Speech recognition not supported. Please use Chrome browser.')
+      return
+    }
+
+    const recognition = new SpeechRecognition()
+    recognitionRef.current = recognition
+
+    const selectedLang = languages.find(l => l.value === language)
+    recognition.lang = selectedLang.code
+    recognition.continuous = true
+    recognition.interimResults = false
+
+    recognition.onresult = async (event) => {
+      const lastResult = event.results[event.results.length - 1]
+      const spokenText = lastResult[0].transcript
+      setTranscript(spokenText)
+      await getGuidance(spokenText)
+    }
+
+    recognition.onerror = (e) => {
+      console.log('Speech error:', e.error)
+    }
+
+    recognition.start()
+  }
+
+  const stopListening = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop()
+    }
+    setListening(false)
+    setShowLanguage(true)
+  }
+
+  const getGuidance = async (spokenText) => {
+    setLoading(true)
+    try {
+      const res = await API.post('/guidance/get', {
+        transcript: spokenText,
+        scenario: scenario,
+        language: language
+      })
+      setGuidance(res.data.guidance)
+
+      // Text to speech
+      const utterance = new SpeechSynthesisUtterance(res.data.guidance)
+      const selectedLang = languages.find(l => l.value === language)
+      utterance.lang = selectedLang.code
+      utterance.rate = 0.9
+      window.speechSynthesis.speak(utterance)
+
+    } catch (err) {
+      console.log('Guidance error:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div style={liveStyles.container}>
+      <h3 style={liveStyles.title}>🎙️ Live Guidance</h3>
+
+      {showLanguage && (
+        <div style={liveStyles.langSection}>
+          <p style={liveStyles.langLabel}>Select Language:</p>
+          <div style={liveStyles.langGrid}>
+            {languages.map(lang => (
+              <button
+                key={lang.value}
+                style={{
+                  ...liveStyles.langBtn,
+                  background: language === lang.value ? '#4F6EF7' : '#181a21',
+                  borderColor: language === lang.value ? '#4F6EF7' : 'rgba(255,255,255,0.1)',
+                  color: language === lang.value ? '#fff' : '#888898'
+                }}
+                onClick={() => setLanguage(lang.value)}
+              >
+                {lang.label}
+              </button>
+            ))}
+          </div>
+
+          <button style={liveStyles.startBtn} onClick={startListening}>
+            🎙️ Start Live Guidance
+          </button>
+        </div>
+      )}
+
+      {listening && (
+        <div style={liveStyles.listeningSection}>
+          <div style={liveStyles.listeningIndicator}>
+            <div style={liveStyles.redDot} />
+            <span style={{color: '#E45858', fontWeight: '700'}}>Listening...</span>
+          </div>
+
+          {transcript && (
+            <div style={liveStyles.transcriptBox}>
+              <p style={liveStyles.transcriptLabel}>Officer said:</p>
+              <p style={liveStyles.transcriptText}>"{transcript}"</p>
+            </div>
+          )}
+
+          {loading && (
+            <div style={liveStyles.loadingBox}>
+              <p style={{color: '#888898', fontSize: '13px'}}>⏳ Getting guidance...</p>
+            </div>
+          )}
+
+          {guidance && !loading && (
+            <div style={liveStyles.guidanceBox}>
+              <p style={liveStyles.guidanceLabel}>💡 Guidance:</p>
+              <p style={liveStyles.guidanceText}>{guidance}</p>
+            </div>
+          )}
+
+          <button style={liveStyles.stopBtn} onClick={stopListening}>
+            ⏹️ Stop Listening
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+const liveStyles = {
+  container: {
+    background: 'rgba(228,88,88,0.05)',
+    border: '1px solid rgba(228,88,88,0.15)',
+    borderRadius: '14px',
+    padding: '22px',
+    marginTop: '24px'
+  },
+  title: {
+    fontSize: '15px', fontWeight: '700',
+    color: '#E8E8EE', marginBottom: '16px'
+  },
+  langSection: { display: 'flex', flexDirection: 'column', gap: '12px' },
+  langLabel: { fontSize: '12px', color: '#888898', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.1em' },
+  langGrid: { display: 'flex', flexWrap: 'wrap', gap: '8px' },
+  langBtn: {
+    border: '1px solid', borderRadius: '8px',
+    padding: '7px 14px', fontSize: '13px',
+    fontWeight: '600', cursor: 'pointer'
+  },
+  startBtn: {
+    background: '#E45858', color: '#fff',
+    border: 'none', borderRadius: '10px',
+    padding: '12px 24px', fontSize: '14px',
+    fontWeight: '700', cursor: 'pointer',
+    marginTop: '8px', width: '100%'
+  },
+  listeningSection: { display: 'flex', flexDirection: 'column', gap: '14px' },
+  listeningIndicator: {
+    display: 'flex', alignItems: 'center', gap: '10px'
+  },
+  redDot: {
+    width: '10px', height: '10px',
+    borderRadius: '50%', background: '#E45858',
+    animation: 'pulse 1s infinite'
+  },
+  transcriptBox: {
+    background: '#181a21',
+    border: '1px solid rgba(255,255,255,0.07)',
+    borderRadius: '10px', padding: '14px'
+  },
+  transcriptLabel: { fontSize: '11px', color: '#888898', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.1em' },
+  transcriptText: { fontSize: '15px', color: '#E8E8EE', fontStyle: 'italic' },
+  loadingBox: { textAlign: 'center', padding: '12px' },
+  guidanceBox: {
+    background: 'rgba(63,200,122,0.08)',
+    border: '1px solid rgba(63,200,122,0.2)',
+    borderRadius: '10px', padding: '16px'
+  },
+  guidanceLabel: { fontSize: '11px', color: '#3FC87A', marginBottom: '8px', fontWeight: '700', textTransform: 'uppercase' },
+  guidanceText: { fontSize: '14px', color: '#b4f0c8', lineHeight: '1.7', whiteSpace: 'pre-wrap' },
+  stopBtn: {
+    background: 'rgba(228,88,88,0.1)',
+    border: '1px solid rgba(228,88,88,0.2)',
+    color: '#E45858', borderRadius: '10px',
+    padding: '10px 20px', fontSize: '14px',
+    fontWeight: '600', cursor: 'pointer'
+  }
+}
+
+
+
 function ShieldMode() {
   const navigate = useNavigate()
   const [selected, setSelected] = useState(null)
@@ -188,6 +405,7 @@ function ShieldMode() {
   if (selected) {
     const scenario = scenarios[selected]
     return (
+      
       <div style={styles.container}>
         <div style={styles.header}>
           <div style={styles.headerLeft}>
@@ -223,7 +441,12 @@ function ShieldMode() {
               </div>
             </div>
           ))}
+        
+        {['traffic_stop', 'stopped_on_street', 'being_arrested'].includes(selected) && (
+            <LiveGuidance scenario={selected} />
+          )}
 
+          
           <div style={styles.disclaimer}>
             ⚠️ This information is for general awareness only and does not constitute legal advice. Contact a qualified lawyer for your specific situation.
           </div>

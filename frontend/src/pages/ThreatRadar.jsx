@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import API from '../utils/api'
+import DocumentScanner from '../components/DocumentScanner'
 
 function ThreatRadar() {
   const navigate = useNavigate()
   const [documents, setDocuments] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [showScanner, setShowScanner] = useState(false)
   const [form, setForm] = useState({
     type: 'passport',
     name: '',
@@ -23,7 +25,7 @@ function ThreatRadar() {
       const res = await API.get('/documents')
       setDocuments(res.data.documents)
     } catch (err) {
-      console.error(errs)
+      console.error(err)
     } finally {
       setLoading(false)
     }
@@ -68,6 +70,18 @@ function ThreatRadar() {
 
   return (
     <div style={styles.container}>
+
+      {/* Scanner Modal */}
+      {showScanner && (
+        <DocumentScanner
+          onDocumentScanned={(doc) => {
+            setShowScanner(false)
+            fetchDocuments()
+          }}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
+
       {/* Header */}
       <div style={styles.header}>
         <div style={styles.headerLeft}>
@@ -83,9 +97,14 @@ function ThreatRadar() {
             <h2 style={styles.heading}>Document Tracker</h2>
             <p style={styles.sub}>Track expiry dates and get alerts before it's too late</p>
           </div>
-          <button style={styles.addBtn} onClick={() => setShowForm(!showForm)}>
-            {showForm ? 'Cancel' : '+ Add Document'}
-          </button>
+          <div style={{display: 'flex', gap: '12px'}}>
+            <button style={styles.addBtn} onClick={() => setShowForm(!showForm)}>
+              {showForm ? 'Cancel' : '+ Add Document'}
+            </button>
+            <button style={styles.scanBtn} onClick={() => setShowScanner(true)}>
+              📸 Scan Document
+            </button>
+          </div>
         </div>
 
         {/* Add Form */}
@@ -209,6 +228,12 @@ const styles = {
   sub: { color: '#888898', fontSize: '14px' },
   addBtn: {
     background: '#4F6EF7', color: '#fff', padding: '10px 20px',
+    borderRadius: '10px', fontSize: '14px', fontWeight: '600'
+  },
+  scanBtn: {
+    background: 'rgba(63,200,122,0.1)',
+    border: '1px solid rgba(63,200,122,0.2)',
+    color: '#3FC87A', padding: '10px 20px',
     borderRadius: '10px', fontSize: '14px', fontWeight: '600'
   },
   formCard: {
