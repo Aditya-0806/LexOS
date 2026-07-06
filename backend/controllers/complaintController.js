@@ -39,6 +39,15 @@ Return ONLY the letter text and legal provisions section, nothing else.`;
         })
       }
     )
+    if (!situation || situation.trim().length < 10) {
+  return res.status(400).json({ message: 'Please describe your situation in more detail.' })
+}
+if (situation.length > 5000) {
+  return res.status(400).json({ message: 'Situation description too long.' })
+}
+if (!name || !address || !date) {
+  return res.status(400).json({ message: 'All fields are required.' })
+}
 
     const data = await response.json()
     console.log('Groq response:', JSON.stringify(data))

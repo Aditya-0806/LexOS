@@ -61,5 +61,69 @@ const deleteDocument = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+const scanDocument = async (req, res) => {
+  try {
+    const { text } = req.body
 
-module.exports = { addDocument, getDocuments, deleteDocument };
+    const prompt = `You are a document reader. Extract information from this OCR text of an Indian document.
+
+OCR Text:
+${text}
+
+Extract and return ONLY this JSON (no other text):
+{
+  "documentType": "passport/driving_license/vehicle_insurance/puc/other",
+  "documentName": "descriptive name",
+  "expiryDate": "YYYY-MM-DD format or null if not found",
+  "found": true/false
+}
+
+Rules:
+- documentType must be one of: passport, driving_license, vehicle_insurance, puc, rental_agreement, other
+- If expiry date not clearly found set found to false
+- Convert any date format to YYYY-MM-DD`
+
+    const response = await fetch(
+      'https://api.groq.com/openai/v1/chat/completions',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 200
+        })
+      }
+    )
+
+    const data = await response.json()
+    const rawResponse = data.choices[0].message.content
+    const clean = rawResponse.replace(/```json|```/g, '').trim()
+    const parsed = JSON.parse(clean)
+
+    if (!parsed.found || !parsed.expiryDate) {
+      return res.json({ success: false })
+    }
+
+    // Auto save to database
+    const document = await Document.create({
+      userId: req.userId,
+      type: parsed.documentType,
+      name: parsed.documentName,
+      expiryDate: new Date(parsed.expiryDate),
+      notes: 'Auto-scanned document'
+    })
+
+    res.json({ success: true, document })
+
+  } catch (error) {
+    console.log('Scan error:', error.message)
+    res.status(500).json({ message: 'Server error', error: error.message })
+  }
+}
+
+module.exports = { addDocument, getDocuments, deleteDocument, scanDocument };
+
