@@ -7,7 +7,7 @@ import ThreatRadar from './pages/ThreatRadar'
 import ShieldMode from './pages/ShieldMode'
 import QuickComplaint from './pages/QuickComplaint'
 import ForgeScan from './pages/ForgeScan'
-
+import LexCounsel from './pages/LexCounsel'
 
 function App() {
   const { user } = useAuth()
@@ -17,18 +17,14 @@ function App() {
       <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
       <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
       <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
-      <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
       <Route path="/threatradar" element={user ? <ThreatRadar /> : <Navigate to="/login" />} />
       <Route path="/shieldmode" element={user ? <ShieldMode /> : <Navigate to="/login" />} />
       <Route path="/quickcomplaint" element={user ? <QuickComplaint /> : <Navigate to="/login" />} />
-      
-<Route path="/forgescan" element={user ? <ForgeScan /> : <Navigate to="/login" />} />
-
-
+      <Route path="/forgescan" element={user ? <ForgeScan /> : <Navigate to="/login" />} />
+      <Route path="/lexcounsel" element={user ? <LexCounsel /> : <Navigate to="/login" />} />
+      <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
     </Routes>
   )
 }
 
-
-// Inside Routes add:
 export default App

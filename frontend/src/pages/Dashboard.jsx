@@ -45,6 +45,11 @@ function Dashboard() {
             <div style={styles.cardTitle}>ForgeScan</div>
             <div style={styles.cardDesc}>Analyse documents for red flags</div>
           </div>
+          <div style={styles.card} onClick={() => navigate('/lexcounsel')}>
+  <div style={styles.cardIcon}>⚖️</div>
+  <div style={styles.cardTitle}>LexCounsel</div>
+  <div style={styles.cardDesc}>Get AI legal consultation for your situation</div>
+</div>
         </div>
       </div>
     </div>
