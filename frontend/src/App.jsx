@@ -8,6 +8,10 @@ import ShieldMode from './pages/ShieldMode'
 import QuickComplaint from './pages/QuickComplaint'
 import ForgeScan from './pages/ForgeScan'
 import LexCounsel from './pages/LexCounsel'
+import LexDraft from './pages/LexDraft'
+import LegalInheritance from './pages/LegalInheritance'
+import LexConnect from './pages/LexConnect'
+
 
 function App() {
   const { user } = useAuth()
@@ -23,6 +27,10 @@ function App() {
       <Route path="/forgescan" element={user ? <ForgeScan /> : <Navigate to="/login" />} />
       <Route path="/lexcounsel" element={user ? <LexCounsel /> : <Navigate to="/login" />} />
       <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
+      <Route path="/lexdraft" element={user ? <LexDraft /> : <Navigate to="/login" />} />
+      <Route path="/legalinheritance" element={user ? <LegalInheritance /> : <Navigate to="/login" />} />
+      <Route path="/lexconnect" element={user ? <LexConnect /> : <Navigate to="/login" />} />
+
     </Routes>
   )
 }

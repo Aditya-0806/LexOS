@@ -50,6 +50,21 @@ function Dashboard() {
   <div style={styles.cardTitle}>LexCounsel</div>
   <div style={styles.cardDesc}>Get AI legal consultation for your situation</div>
 </div>
+          <div style={styles.card} onClick={() => navigate('/lexdraft')}>
+  <div style={styles.cardIcon}>📄</div>
+  <div style={styles.cardTitle}>LexDraft</div>
+  <div style={styles.cardDesc}>Generate legal documents instantly with AI</div>
+</div>
+          <div style={styles.card} onClick={() => navigate('/legalinheritance')}>
+  <div style={styles.cardIcon}>🧬</div>
+  <div style={styles.cardTitle}>LegalInheritance</div>
+  <div style={styles.cardDesc}>Check your family's legal health and gaps</div>
+</div>
+          <div style={styles.card} onClick={() => navigate('/lexconnect')}>
+  <div style={styles.cardIcon}>🤝</div>
+  <div style={styles.cardTitle}>LexConnect</div>
+  <div style={styles.cardDesc}>Connect with lawyers and legal aid services</div>
+</div>
         </div>
       </div>
     </div>
