@@ -1,14 +1,25 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit')
+const helmet = require('helmet')
 require('dotenv').config();
 
 const app = express();
-const rateLimit = require('express-rate-limit')
-const helmet = require('helmet')
+
+// CORS must be first
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
+app.options('*', cors())
 
 // Security
 app.use(helmet())
+
+// Middleware
+app.use(express.json());
 
 // Rate limiting
 const limiter = rateLimit({
@@ -29,13 +40,6 @@ app.use('/api/counsel', aiLimiter)
 app.use('/api/lexdraft', aiLimiter)
 app.use('/api/forgescan', aiLimiter)
 app.use('/api/guidance', aiLimiter)
-
-app.use(cors({
-  origin: ['https://lex-os-rosy.vercel.app', 'http://localhost:5173'],
-  credentials: true
-}));
-app.use(express.json());
-
 // Routes
 const authRoutes = require('./routes/auth');
 const documentRoutes = require('./routes/documents');
