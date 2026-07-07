@@ -29,8 +29,11 @@ app.use('/api/counsel', aiLimiter)
 app.use('/api/lexdraft', aiLimiter)
 app.use('/api/forgescan', aiLimiter)
 app.use('/api/guidance', aiLimiter)
-// Middleware
-app.use(cors());
+
+app.use(cors({
+  origin: ['https://lex-os-rosy.vercel.app', 'http://localhost:5173'],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
@@ -75,4 +78,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
