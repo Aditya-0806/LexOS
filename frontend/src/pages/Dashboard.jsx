@@ -3,517 +3,474 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 const features = [
-  {
-    icon: '📡',
-    title: 'ThreatRadar',
-    desc: 'Track document expiry dates and get proactive alerts before deadlines hit',
-    path: '/threatradar',
-    color: '#4F6EF7',
-    tag: 'Proactive',
-    number: '01'
-  },
-  {
-    icon: '🛡️',
-    title: 'ShieldMode',
-    desc: 'Real-time rights display during police interactions with live audio guidance',
-    path: '/shieldmode',
-    color: '#E05252',
-    tag: 'Emergency',
-    number: '02'
-  },
-  {
-    icon: '📝',
-    title: 'QuickComplaint',
-    desc: 'AI drafts a formal complaint letter with exact legal sections in seconds',
-    path: '/quickcomplaint',
-    color: '#4CAF7D',
-    tag: 'AI Draft',
-    number: '03'
-  },
-  {
-    icon: '🔍',
-    title: 'ForgeScan',
-    desc: 'Upload any legal document — AI identifies red flags and missing clauses',
-    path: '/forgescan',
-    color: '#C9A84C',
-    tag: 'Scanner',
-    number: '04'
-  },
-  {
-    icon: '⚖️',
-    title: 'LexCounsel',
-    desc: 'Structured AI legal consultation with rights, options and next steps',
-    path: '/lexcounsel',
-    color: '#C9A84C',
-    tag: 'Counsel',
-    number: '05'
-  },
-  {
-    icon: '📄',
-    title: 'LexDraft',
-    desc: 'Generate rent agreements, affidavits, legal notices and more instantly',
-    path: '/lexdraft',
-    color: '#4F6EF7',
-    tag: 'Generator',
-    number: '06'
-  },
-  {
-    icon: '🧬',
-    title: 'LegalInheritance',
-    desc: 'Track legal documentation gaps for you and your spouse',
-    path: '/legalinheritance',
-    color: '#4CAF7D',
-    tag: 'Planner',
-    number: '07'
-  },
-  {
-    icon: '🤝',
-    title: 'LexConnect',
-    desc: 'Find free legal aid, official helplines and lawyers across India',
-    path: '/lexconnect',
-    color: '#C9A84C',
-    tag: 'Directory',
-    number: '08'
-  },
+  { icon: '📡', title: 'ThreatRadar', desc: 'Track document expiry dates and get proactive alerts before deadlines hit', path: '/threatradar', tag: 'Proactive' },
+  { icon: '🛡️', title: 'ShieldMode', desc: 'Real-time rights display during police interactions with live audio guidance', path: '/shieldmode', tag: 'Emergency' },
+  { icon: '📝', title: 'QuickComplaint', desc: 'AI drafts a formal complaint letter with exact legal sections in seconds', path: '/quickcomplaint', tag: 'AI Draft' },
+  { icon: '🔍', title: 'ForgeScan', desc: 'Upload any legal document — AI identifies red flags and missing clauses', path: '/forgescan', tag: 'Scanner' },
+  { icon: '⚖️', title: 'LexCounsel', desc: 'Structured AI legal consultation with rights, options and next steps', path: '/lexcounsel', tag: 'Counsel' },
+  { icon: '📄', title: 'LexDraft', desc: 'Generate rent agreements, affidavits, legal notices and more instantly', path: '/lexdraft', tag: 'Generator' },
+  { icon: '🧬', title: 'LegalInheritance', desc: 'Track legal documentation gaps for you and your spouse', path: '/legalinheritance', tag: 'Planner' },
+  { icon: '🤝', title: 'LexConnect', desc: 'Find free legal aid, official helplines and lawyers across India', path: '/lexconnect', tag: 'Directory' },
 ]
 
-function Dashboard() {
+export default function Dashboard() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
-  const [visible, setVisible] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const [hovered, setHovered] = useState(null)
 
-  useEffect(() => {
-    setTimeout(() => setVisible(true), 50)
-  }, [])
-
-  const handleLogout = () => {
-    logout()
-    navigate('/login')
-  }
-
-  const greeting = () => {
-    const h = new Date().getHours()
-    if (h < 12) return 'Good morning'
-    if (h < 17) return 'Good afternoon'
-    return 'Good evening'
-  }
+  useEffect(() => { setTimeout(() => setMounted(true), 80) }, [])
 
   return (
-    <div style={s.page}>
+    <div style={s.root}>
       <style>{`
-        .dash-card {
-          transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
-          cursor: pointer;
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+          background: #080808;
+          color: #F0EDE8;
+          font-family: 'Inter', sans-serif;
+          -webkit-font-smoothing: antialiased;
         }
-        .dash-card:hover {
-          transform: translateY(-3px);
-        }
-        .nav-item {
-          transition: all 0.2s ease;
-          cursor: pointer;
-        }
-        .nav-item:hover {
-          color: #F0EDE8 !important;
-        }
-        .logout-btn {
-          transition: all 0.2s ease;
-        }
-        .logout-btn:hover {
-          background: rgba(224,82,82,0.12) !important;
-          color: #E05252 !important;
-          border-color: rgba(224,82,82,0.2) !important;
-        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
+
         @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+          from { opacity: 0; transform: translateY(16px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
-        @keyframes shimmer {
-          0% { background-position: -200% center; }
-          100% { background-position: 200% center; }
-        }
-        @keyframes blink {
+
+        @keyframes goldPulse {
           0%,100% { opacity: 1; }
-          50% { opacity: 0.3; }
+          50%      { opacity: 0.5; }
         }
-        .live-dot {
-          animation: blink 2s ease infinite;
+
+        .feat-card {
+          transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
         }
-        .gold-shimmer {
-          background: linear-gradient(90deg, #C9A84C 0%, #E2C47A 50%, #C9A84C 100%);
-          background-size: 200% auto;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          animation: shimmer 4s linear infinite;
+        .feat-card:hover {
+          border-color: rgba(201,168,76,0.25) !important;
+          box-shadow: 0 0 0 1px rgba(201,168,76,0.08), 0 20px 40px rgba(0,0,0,0.5) !important;
+          transform: translateY(-2px);
+          cursor: pointer;
+        }
+        .feat-card:hover .card-arrow {
+          color: #C9A84C !important;
+          transform: translateX(3px);
+        }
+        .card-arrow {
+          transition: color 0.2s ease, transform 0.2s ease;
+          color: #333330;
+          font-size: 14px;
+        }
+
+        .nav-link {
+          color: #666660;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: color 0.2s ease;
+          text-decoration: none;
+        }
+        .nav-link:hover { color: #F0EDE8; }
+
+        .sign-out {
+          background: transparent;
+          border: 1px solid rgba(255,255,255,0.08);
+          color: #444440;
+          padding: 7px 14px;
+          border-radius: 8px;
+          font-size: 12px;
+          font-weight: 500;
+          cursor: pointer;
+          font-family: 'Inter', sans-serif;
+          transition: all 0.2s ease;
+        }
+        .sign-out:hover {
+          border-color: rgba(224,82,82,0.3);
+          color: #E05252;
+          background: rgba(224,82,82,0.06);
+        }
+
+        .cta-primary {
+          background: #C9A84C;
+          color: #080808;
+          border: none;
+          padding: 13px 28px;
+          border-radius: 10px;
+          font-size: 14px;
+          font-weight: 700;
+          cursor: pointer;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: 0.01em;
+          transition: all 0.2s ease;
+        }
+        .cta-primary:hover {
+          background: #E2C47A;
+          box-shadow: 0 8px 24px rgba(201,168,76,0.3);
+          transform: translateY(-1px);
+        }
+
+        .cta-secondary {
+          background: transparent;
+          color: #888880;
+          border: 1px solid rgba(255,255,255,0.1);
+          padding: 12px 22px;
+          border-radius: 10px;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          font-family: 'Inter', sans-serif;
+          transition: all 0.2s ease;
+        }
+        .cta-secondary:hover {
+          background: rgba(255,255,255,0.04);
+          color: #F0EDE8;
+          border-color: rgba(255,255,255,0.15);
         }
       `}</style>
 
-      {/* ── NAVBAR ── */}
-      <nav style={s.nav}>
+      {/* ── NAV ── */}
+      <header style={s.nav}>
         <div style={s.navLeft}>
-          <div style={s.logoMark}>⚖️</div>
-          <span style={s.logoText} className="display-font">LexOS</span>
-          <div style={s.navPipe} />
-          <span style={s.navSub}>Legal Intelligence</span>
+          <div style={s.logoIcon}>⚖️</div>
+          <span style={s.logoWord}>LexOS</span>
+          <span style={s.navDivider}>|</span>
+          <span style={s.navCaption}>Legal Intelligence</span>
         </div>
         <div style={s.navRight}>
-          <span
-            className="nav-item"
-            style={s.navLink}
-            onClick={() => navigate('/lexcounsel')}
-          >
-            Counsel
-          </span>
-          <span
-            className="nav-item"
-            style={s.navLink}
-            onClick={() => navigate('/lexconnect')}
-          >
-            Connect
-          </span>
-          <div style={s.userPill}>
-            <div style={s.userAvatar}>
-              {user?.name?.charAt(0).toUpperCase()}
-            </div>
-            <span style={s.userNameText}>{user?.name?.split(' ')[0]}</span>
+          <span className="nav-link" onClick={() => navigate('/lexcounsel')}>Counsel</span>
+          <span className="nav-link" onClick={() => navigate('/shieldmode')}>ShieldMode</span>
+          <span className="nav-link" onClick={() => navigate('/lexconnect')}>Connect</span>
+          <div style={s.avatarChip}>
+            <div style={s.avatarCircle}>{user?.name?.charAt(0).toUpperCase()}</div>
+            <span style={s.avatarName}>{user?.name?.split(' ')[0]}</span>
           </div>
-          <button
-            className="logout-btn"
-            style={s.logoutBtn}
-            onClick={handleLogout}
-          >
+          <button className="sign-out" onClick={() => { logout(); navigate('/login') }}>
             Sign out
           </button>
         </div>
-      </nav>
+      </header>
 
       {/* ── HERO ── */}
       <section style={s.hero}>
-        <div style={s.heroGlow1} />
-        <div style={s.heroGlow2} />
+        {/* Subtle glow */}
+        <div style={s.heroGlowLeft} />
+        <div style={s.heroGlowRight} />
 
-        <div
-          style={{
-            ...s.heroInner,
-            opacity: visible ? 1 : 0,
-            animation: visible ? 'fadeUp 0.7s ease forwards' : 'none'
-          }}
-        >
+        <div style={{
+          ...s.heroContent,
+          opacity: mounted ? 1 : 0,
+          animation: mounted ? 'fadeUp 0.6s ease forwards' : 'none'
+        }}>
           {/* Eyebrow */}
           <div style={s.eyebrow}>
-            <span className="live-dot" style={s.liveDot} />
-            <span style={s.eyebrowText}>AI-Powered · India-First · Always Free</span>
+            <span style={{
+              width: 6, height: 6, borderRadius: '50%',
+              background: '#C9A84C', display: 'inline-block',
+              animation: 'goldPulse 2.5s ease infinite'
+            }} />
+            <span style={s.eyebrowText}>
+              AI-Powered · India-First · Always Free
+            </span>
           </div>
 
-          {/* Title */}
-          <h1 style={s.heroTitle} className="display-font">
-            {greeting()},<br />
-            <span className="gold-shimmer">{user?.name?.split(' ')[0]}.</span>
+          {/* Main heading */}
+          <h1 style={s.heroH1}>
+            Your Legal Rights,
+            <br />
+            <em style={s.heroEm}>Always Within Reach.</em>
           </h1>
 
-          <p style={s.heroSub}>
-            Your personal legal intelligence platform — built for every Indian citizen.
-            Know your rights, protect your interests, act with confidence.
+          <p style={s.heroP}>
+            LexOS puts a full-time AI legal assistant in every Indian's pocket —
+            from police interactions to document drafting, instant and free.
           </p>
 
-          {/* CTA row */}
+          {/* CTAs */}
           <div style={s.ctaRow}>
-            <button
-              className="lex-btn-primary"
-              onClick={() => navigate('/lexcounsel')}
-            >
+            <button className="cta-primary" onClick={() => navigate('/lexcounsel')}>
               Get Legal Consultation →
             </button>
-            <button
-              className="lex-btn-secondary"
-              onClick={() => navigate('/shieldmode')}
-            >
+            <button className="cta-secondary" onClick={() => navigate('/shieldmode')}>
               🛡️ ShieldMode
             </button>
           </div>
 
-          {/* Stats bar */}
-          <div style={s.statsBar}>
+          {/* Stats */}
+          <div style={s.stats}>
             {[
               { v: '9', l: 'AI Features' },
               { v: '₹0', l: 'Cost to You' },
-              { v: '24/7', l: 'Availability' },
+              { v: '24/7', l: 'Available' },
               { v: '100%', l: 'India-Specific' },
             ].map((st, i) => (
               <div key={i} style={s.statItem}>
                 {i > 0 && <div style={s.statPipe} />}
-                <div style={s.statVal}>{st.v}</div>
-                <div style={s.statLbl}>{st.l}</div>
+                <span style={s.statV}>{st.v}</span>
+                <span style={s.statL}>{st.l}</span>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Decorative sparkle */}
+        <div style={s.sparkle}>✦</div>
       </section>
 
+      {/* ── DIVIDER ── */}
+      <div style={s.divider}>
+        <span style={s.dividerSymbol}>✦</span>
+      </div>
+
       {/* ── FEATURES ── */}
-      <section style={s.featuresSection}>
-        <div style={s.featuresHeader}>
-          <div className="section-eyebrow">Platform Features</div>
-          <h2 style={s.featuresTitle} className="display-font">
-            Everything legal, in one place
+      <section style={s.features}>
+        <div style={s.featHead}>
+          <p style={s.featEyebrow}>Platform Features</p>
+          <h2 style={s.featTitle}>
+            Everything legal,<br />in one place.
           </h2>
+          <p style={s.featSub}>
+            Nine AI-powered tools built specifically for Indian citizens —
+            each solving a distinct, real problem no other app addresses.
+          </p>
         </div>
 
         <div style={s.grid}>
           {features.map((f, i) => (
             <div
               key={i}
-              className="dash-card"
+              className="feat-card"
               style={{
                 ...s.card,
-                borderColor: hovered === i ? `${f.color}35` : 'rgba(255,255,255,0.06)',
-                boxShadow: hovered === i
-                  ? `0 0 0 1px ${f.color}15, 0 24px 48px rgba(0,0,0,0.3)`
-                  : '0 2px 8px rgba(0,0,0,0.2)',
-                animationDelay: `${i * 0.04}s`,
-                animation: visible ? `fadeUp 0.5s ease ${i * 0.04}s both` : 'none'
+                animationDelay: `${i * 0.045}s`,
+                animation: mounted ? `fadeUp 0.5s ease ${i * 0.045}s both` : 'none'
               }}
               onClick={() => navigate(f.path)}
-              onMouseEnter={() => setHovered(i)}
-              onMouseLeave={() => setHovered(null)}
             >
-              {/* Gold left border on hover */}
-              <div style={{
-                position: 'absolute',
-                left: 0, top: '20%', bottom: '20%',
-                width: '2px',
-                background: f.color,
-                borderRadius: '2px',
-                opacity: hovered === i ? 1 : 0,
-                transition: 'opacity 0.25s ease'
-              }} />
+              {/* Gold top line */}
+              <div style={s.cardTopLine} />
 
-              {/* Number */}
-              <div style={s.cardNum}>{f.number}</div>
-
-              {/* Icon + Tag row */}
-              <div style={s.cardTop}>
-                <div style={{
-                  ...s.iconBox,
-                  background: `${f.color}10`,
-                  border: `1px solid ${f.color}20`
-                }}>
-                  <span style={{fontSize: '18px'}}>{f.icon}</span>
+              <div style={s.cardInner}>
+                <div style={s.cardHead}>
+                  <span style={s.cardIcon}>{f.icon}</span>
+                  <span style={s.cardTag}>{f.tag}</span>
                 </div>
-                <span style={{
-                  ...s.cardTag,
-                  color: f.color,
-                  background: `${f.color}10`,
-                  border: `1px solid ${f.color}20`
-                }}>
-                  {f.tag}
-                </span>
-              </div>
-
-              <h3 style={s.cardTitle}>{f.title}</h3>
-              <p style={s.cardDesc}>{f.desc}</p>
-
-              <div style={{
-                ...s.cardFooter,
-                borderTopColor: hovered === i ? `${f.color}20` : 'rgba(255,255,255,0.05)'
-              }}>
-                <span style={{
-                  color: hovered === i ? f.color : '#444440',
-                  fontSize: '12px', fontWeight: '600',
-                  transition: 'color 0.2s ease'
-                }}>
-                  Open →
-                </span>
+                <h3 style={s.cardTitle}>{f.title}</h3>
+                <p style={s.cardDesc}>{f.desc}</p>
+                <div style={s.cardFoot}>
+                  <span style={s.cardOpen}>Open feature</span>
+                  <span className="card-arrow">→</span>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── DISCLAIMER FOOTER ── */}
+      {/* ── FOOTER ── */}
       <footer style={s.footer}>
-        <div style={s.footerLine} />
-        <div style={s.footerInner}>
-          <span style={s.footerLogo} className="display-font">LexOS</span>
-          <p style={s.footerNote}>
-            ⚠️ LexOS provides AI-powered legal information based on Indian law.
-            This is not a substitute for advice from a qualified legal professional.
+        <div style={s.footerTop}>
+          <div style={s.footerBrand}>
+            <span style={s.footerLogo}>⚖️ LexOS</span>
+            <span style={s.footerTagline}>Legal Intelligence for India</span>
+          </div>
+          <span style={s.footerSpark}>✦</span>
+          <p style={s.footerDisclaimer}>
+            LexOS provides AI-powered legal information based on Indian law.
+            Not a substitute for professional legal advice.
           </p>
-          <span style={s.footerRight}>Built for India 🇮🇳</span>
+        </div>
+        <div style={s.footerBottom}>
+          <span style={s.footerCopy}>© 2025 LexOS · Built for India 🇮🇳</span>
         </div>
       </footer>
     </div>
   )
 }
 
+const GOLD = '#C9A84C'
+const GOLD_DIM = 'rgba(201,168,76,0.08)'
+const GOLD_BORDER = 'rgba(201,168,76,0.15)'
+const BORDER = 'rgba(255,255,255,0.06)'
+
 const s = {
-  page: {
-    minHeight: '100vh',
-    background: '#0D0D0D',
-    fontFamily: "'Inter', sans-serif",
-    color: '#F0EDE8'
-  },
+  root: { minHeight: '100vh', background: '#080808', color: '#F0EDE8' },
 
   // Nav
   nav: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    padding: '0 40px', height: '64px',
-    borderBottom: '1px solid rgba(255,255,255,0.06)',
-    background: 'rgba(13,13,13,0.97)',
-    backdropFilter: 'blur(20px)',
-    position: 'sticky', top: 0, zIndex: 100
+    padding: '0 48px', height: '62px',
+    borderBottom: `1px solid ${BORDER}`,
+    background: 'rgba(8,8,8,0.96)',
+    backdropFilter: 'blur(16px)',
+    position: 'sticky', top: 0, zIndex: 200
   },
-  navLeft: { display: 'flex', alignItems: 'center', gap: '12px' },
-  logoMark: {
-    width: '32px', height: '32px', borderRadius: '8px',
-    background: 'linear-gradient(135deg, #C9A84C, #E2C47A)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '16px'
+  navLeft: { display: 'flex', alignItems: 'center', gap: '14px' },
+  logoIcon: {
+    width: '30px', height: '30px', borderRadius: '7px',
+    background: `linear-gradient(135deg, ${GOLD}, #E2C47A)`,
+    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px'
   },
-  logoText: {
-    fontSize: '20px', fontWeight: '700', letterSpacing: '-0.02em',
-    background: 'linear-gradient(135deg, #F0EDE8, #C9A84C)',
-    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text'
+  logoWord: {
+    fontFamily: "'Playfair Display', serif",
+    fontSize: '19px', fontWeight: '700',
+    background: `linear-gradient(135deg, #F0EDE8 40%, ${GOLD})`,
+    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'
   },
-  navPipe: { width: '1px', height: '18px', background: 'rgba(255,255,255,0.08)' },
-  navSub: { fontSize: '12px', color: '#444440', fontWeight: '500' },
-  navRight: { display: 'flex', alignItems: 'center', gap: '20px' },
-  navLink: { fontSize: '13px', color: '#888880', fontWeight: '500' },
-  userPill: {
+  navDivider: { color: 'rgba(255,255,255,0.1)', fontSize: '16px', fontWeight: '300' },
+  navCaption: { fontSize: '12px', color: '#333330', fontWeight: '400' },
+  navRight: { display: 'flex', alignItems: 'center', gap: '24px' },
+  avatarChip: {
     display: 'flex', alignItems: 'center', gap: '8px',
     background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.07)',
+    border: `1px solid ${BORDER}`,
     borderRadius: '100px', padding: '4px 14px 4px 4px'
   },
-  userAvatar: {
-    width: '28px', height: '28px', borderRadius: '50%',
-    background: 'linear-gradient(135deg, #C9A84C, #E2C47A)',
+  avatarCircle: {
+    width: '26px', height: '26px', borderRadius: '50%',
+    background: `linear-gradient(135deg, ${GOLD}, #E2C47A)`,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '12px', fontWeight: '700', color: '#0D0D0D'
+    fontSize: '11px', fontWeight: '700', color: '#080808'
   },
-  userNameText: { fontSize: '13px', color: '#B8B5B0', fontWeight: '500' },
-  logoutBtn: {
-    background: 'transparent',
-    border: '1px solid rgba(255,255,255,0.08)',
-    color: '#444440', padding: '7px 14px',
-    borderRadius: '8px', fontSize: '12px', fontWeight: '500'
-  },
+  avatarName: { fontSize: '12px', color: '#888880', fontWeight: '500' },
 
   // Hero
   hero: {
     position: 'relative', overflow: 'hidden',
-    padding: '100px 40px 80px',
-    borderBottom: '1px solid rgba(255,255,255,0.05)',
+    padding: '110px 48px 90px',
+    borderBottom: `1px solid ${BORDER}`
   },
-  heroGlow1: {
-    position: 'absolute', top: '-200px', left: '-100px',
-    width: '600px', height: '600px', borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 65%)',
+  heroGlowLeft: {
+    position: 'absolute', top: '-120px', left: '-80px',
+    width: '480px', height: '480px', borderRadius: '50%',
+    background: `radial-gradient(circle, ${GOLD_DIM} 0%, transparent 68%)`,
     pointerEvents: 'none'
   },
-  heroGlow2: {
-    position: 'absolute', bottom: '-200px', right: '-100px',
-    width: '500px', height: '500px', borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 65%)',
+  heroGlowRight: {
+    position: 'absolute', bottom: '-180px', right: '-60px',
+    width: '400px', height: '400px', borderRadius: '50%',
+    background: 'radial-gradient(circle, rgba(79,110,247,0.04) 0%, transparent 68%)',
     pointerEvents: 'none'
   },
-  heroInner: { maxWidth: '680px', position: 'relative' },
+  heroContent: { maxWidth: '660px', position: 'relative' },
   eyebrow: {
     display: 'inline-flex', alignItems: 'center', gap: '8px',
-    background: 'rgba(201,168,76,0.08)',
-    border: '1px solid rgba(201,168,76,0.15)',
-    borderRadius: '100px', padding: '5px 14px',
-    marginBottom: '28px'
+    background: GOLD_DIM, border: `1px solid ${GOLD_BORDER}`,
+    borderRadius: '100px', padding: '5px 14px', marginBottom: '30px'
   },
-  liveDot: {
-    width: '6px', height: '6px', borderRadius: '50%',
-    background: '#C9A84C', display: 'inline-block'
-  },
-  eyebrowText: { fontSize: '11px', fontWeight: '600', color: '#C9A84C', letterSpacing: '0.08em' },
-  heroTitle: {
-    fontSize: 'clamp(40px, 6vw, 72px)',
-    fontWeight: '700', lineHeight: '1.05',
-    letterSpacing: '-0.03em', marginBottom: '20px',
+  eyebrowText: { fontSize: '11px', fontWeight: '600', color: GOLD, letterSpacing: '0.08em' },
+  heroH1: {
+    fontFamily: "'Playfair Display', Georgia, serif",
+    fontSize: 'clamp(42px, 6vw, 70px)',
+    fontWeight: '800', lineHeight: '1.07',
+    letterSpacing: '-0.02em', marginBottom: '22px',
     color: '#F0EDE8'
   },
-  heroSub: {
-    fontSize: '16px', color: '#888880', lineHeight: '1.75',
-    marginBottom: '36px', maxWidth: '520px'
+  heroEm: {
+    fontStyle: 'italic',
+    background: `linear-gradient(135deg, ${GOLD} 0%, #E2C47A 60%, ${GOLD} 100%)`,
+    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'
   },
-  ctaRow: { display: 'flex', gap: '12px', marginBottom: '48px', flexWrap: 'wrap' },
-  statsBar: {
-    display: 'flex', alignItems: 'center', gap: '0',
+  heroP: {
+    fontSize: '16px', color: '#666660', lineHeight: '1.8',
+    marginBottom: '36px', maxWidth: '500px'
+  },
+  ctaRow: { display: 'flex', gap: '12px', marginBottom: '52px', flexWrap: 'wrap' },
+  stats: {
+    display: 'inline-flex', alignItems: 'center',
     background: 'rgba(255,255,255,0.02)',
-    border: '1px solid rgba(255,255,255,0.06)',
-    borderRadius: '14px', padding: '18px 0',
-    width: 'fit-content'
+    border: `1px solid ${BORDER}`,
+    borderRadius: '14px'
   },
-  statItem: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 28px', position: 'relative' },
-  statPipe: { position: 'absolute', left: 0, top: '10%', bottom: '10%', width: '1px', background: 'rgba(255,255,255,0.06)' },
-  statVal: { fontSize: '24px', fontWeight: '800', color: '#F0EDE8', lineHeight: '1', letterSpacing: '-0.02em' },
-  statLbl: { fontSize: '11px', color: '#444440', marginTop: '4px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.08em' },
+  statItem: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 26px', position: 'relative' },
+  statPipe: { position: 'absolute', left: 0, top: '20%', bottom: '20%', width: '1px', background: BORDER },
+  statV: { fontSize: '22px', fontWeight: '800', color: '#F0EDE8', letterSpacing: '-0.02em', lineHeight: '1' },
+  statL: { fontSize: '10px', color: '#3a3a38', marginTop: '4px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.1em' },
+  sparkle: {
+    position: 'absolute', bottom: '32px', right: '48px',
+    fontSize: '32px', color: GOLD_BORDER, fontWeight: '400',
+    userSelect: 'none', pointerEvents: 'none'
+  },
+
+  // Divider
+  divider: {
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    padding: '32px 0', borderBottom: `1px solid ${BORDER}`,
+    position: 'relative'
+  },
+  dividerSymbol: { fontSize: '14px', color: '#2a2a28', letterSpacing: '6px' },
 
   // Features
-  featuresSection: { padding: '64px 40px 80px' },
-  featuresHeader: { marginBottom: '40px' },
-  featuresTitle: {
-    fontSize: '32px', fontWeight: '700',
-    color: '#F0EDE8', letterSpacing: '-0.02em', marginTop: '8px'
+  features: { padding: '72px 48px 88px' },
+  featHead: { maxWidth: '500px', marginBottom: '52px' },
+  featEyebrow: {
+    fontSize: '11px', fontWeight: '700', color: GOLD,
+    letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px'
   },
+  featTitle: {
+    fontFamily: "'Playfair Display', Georgia, serif",
+    fontSize: 'clamp(28px, 4vw, 40px)',
+    fontWeight: '700', color: '#F0EDE8',
+    lineHeight: '1.15', letterSpacing: '-0.02em', marginBottom: '14px'
+  },
+  featSub: { fontSize: '14px', color: '#555550', lineHeight: '1.75' },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(265px, 1fr))',
     gap: '12px'
   },
   card: {
-    background: '#111111',
-    border: '1px solid rgba(255,255,255,0.06)',
-    borderRadius: '16px', padding: '22px',
+    background: '#0D0D0D',
+    border: `1px solid ${BORDER}`,
+    borderRadius: '14px',
     position: 'relative', overflow: 'hidden'
   },
-  cardNum: {
-    font: '500 11px/1 "JetBrains Mono", monospace',
-    color: '#2A2A28', marginBottom: '16px',
-    letterSpacing: '0.05em'
+  cardTopLine: {
+    height: '1px',
+    background: `linear-gradient(90deg, transparent, ${GOLD_BORDER}, transparent)`
   },
-  cardTop: {
-    display: 'flex', justifyContent: 'space-between',
-    alignItems: 'center', marginBottom: '14px'
-  },
-  iconBox: {
-    width: '40px', height: '40px', borderRadius: '10px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center'
-  },
+  cardInner: { padding: '22px' },
+  cardHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
+  cardIcon: { fontSize: '22px' },
   cardTag: {
     fontSize: '10px', fontWeight: '700',
-    padding: '3px 9px', borderRadius: '100px',
-    letterSpacing: '0.08em', textTransform: 'uppercase'
+    color: '#3a3a38', letterSpacing: '0.1em',
+    textTransform: 'uppercase', fontFamily: "'Inter', sans-serif"
   },
   cardTitle: {
     fontSize: '15px', fontWeight: '700',
-    color: '#F0EDE8', marginBottom: '8px', letterSpacing: '-0.01em'
+    color: '#E8E5E0', marginBottom: '8px', letterSpacing: '-0.01em'
   },
-  cardDesc: {
-    fontSize: '13px', color: '#666660',
-    lineHeight: '1.65', marginBottom: '18px'
+  cardDesc: { fontSize: '13px', color: '#555550', lineHeight: '1.65', marginBottom: '20px' },
+  cardFoot: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    paddingTop: '14px', borderTop: `1px solid ${BORDER}`
   },
-  cardFooter: {
-    paddingTop: '14px',
-    borderTop: '1px solid'
-  },
+  cardOpen: { fontSize: '12px', color: '#333330', fontWeight: '500' },
 
   // Footer
-  footer: { padding: '0 40px 40px' },
-  footerLine: { height: '1px', background: 'rgba(255,255,255,0.05)', marginBottom: '24px' },
-  footerInner: {
-    display: 'flex', alignItems: 'center',
-    justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px'
+  footer: {
+    borderTop: `1px solid ${BORDER}`,
+    padding: '32px 48px 40px'
   },
-  footerLogo: { fontSize: '16px', fontWeight: '700', color: '#C9A84C' },
-  footerNote: { fontSize: '11px', color: '#333330', maxWidth: '460px', lineHeight: '1.6' },
-  footerRight: { fontSize: '12px', color: '#333330' }
+  footerTop: {
+    display: 'flex', alignItems: 'center',
+    justifyContent: 'space-between', flexWrap: 'wrap',
+    gap: '16px', marginBottom: '20px'
+  },
+  footerBrand: { display: 'flex', flexDirection: 'column', gap: '4px' },
+  footerLogo: {
+    fontFamily: "'Playfair Display', serif",
+    fontSize: '16px', fontWeight: '700', color: GOLD
+  },
+  footerTagline: { fontSize: '11px', color: '#2a2a28' },
+  footerSpark: { fontSize: '18px', color: '#222220' },
+  footerDisclaimer: { fontSize: '11px', color: '#2a2a28', maxWidth: '420px', lineHeight: '1.6', textAlign: 'right' },
+  footerBottom: { borderTop: `1px solid rgba(255,255,255,0.03)`, paddingTop: '20px' },
+  footerCopy: { fontSize: '11px', color: '#222220' }
 }
-
-export default Dashboard
