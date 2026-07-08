@@ -9,39 +9,44 @@ const features = [
     desc: 'Track document expiry dates and get proactive alerts before deadlines hit',
     path: '/threatradar',
     color: '#4F6EF7',
-    tag: 'Proactive'
+    tag: 'Proactive',
+    number: '01'
   },
   {
     icon: '🛡️',
     title: 'ShieldMode',
     desc: 'Real-time rights display during police interactions with live audio guidance',
     path: '/shieldmode',
-    color: '#E45858',
-    tag: 'Emergency'
+    color: '#E05252',
+    tag: 'Emergency',
+    number: '02'
   },
   {
     icon: '📝',
     title: 'QuickComplaint',
     desc: 'AI drafts a formal complaint letter with exact legal sections in seconds',
     path: '/quickcomplaint',
-    color: '#3FC87A',
-    tag: 'AI Powered'
+    color: '#4CAF7D',
+    tag: 'AI Draft',
+    number: '03'
   },
   {
     icon: '🔍',
     title: 'ForgeScan',
     desc: 'Upload any legal document — AI identifies red flags and missing clauses',
     path: '/forgescan',
-    color: '#E4A838',
-    tag: 'AI Powered'
+    color: '#C9A84C',
+    tag: 'Scanner',
+    number: '04'
   },
   {
     icon: '⚖️',
     title: 'LexCounsel',
     desc: 'Structured AI legal consultation with rights, options and next steps',
     path: '/lexcounsel',
-    color: '#7C5CFC',
-    tag: 'AI Powered'
+    color: '#C9A84C',
+    tag: 'Counsel',
+    number: '05'
   },
   {
     icon: '📄',
@@ -49,23 +54,26 @@ const features = [
     desc: 'Generate rent agreements, affidavits, legal notices and more instantly',
     path: '/lexdraft',
     color: '#4F6EF7',
-    tag: 'Generator'
+    tag: 'Generator',
+    number: '06'
   },
   {
     icon: '🧬',
     title: 'LegalInheritance',
     desc: 'Track legal documentation gaps for you and your spouse',
     path: '/legalinheritance',
-    color: '#3FC87A',
-    tag: 'Planner'
+    color: '#4CAF7D',
+    tag: 'Planner',
+    number: '07'
   },
   {
     icon: '🤝',
     title: 'LexConnect',
     desc: 'Find free legal aid, official helplines and lawyers across India',
     path: '/lexconnect',
-    color: '#E4A838',
-    tag: 'Directory'
+    color: '#C9A84C',
+    tag: 'Directory',
+    number: '08'
   },
 ]
 
@@ -73,13 +81,10 @@ function Dashboard() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [visible, setVisible] = useState(false)
-  const [hoveredCard, setHoveredCard] = useState(null)
-  const [time, setTime] = useState(new Date())
+  const [hovered, setHovered] = useState(null)
 
   useEffect(() => {
-    setTimeout(() => setVisible(true), 100)
-    const timer = setInterval(() => setTime(new Date()), 1000)
-    return () => clearInterval(timer)
+    setTimeout(() => setVisible(true), 50)
   }, [])
 
   const handleLogout = () => {
@@ -88,187 +93,216 @@ function Dashboard() {
   }
 
   const greeting = () => {
-    const h = time.getHours()
+    const h = new Date().getHours()
     if (h < 12) return 'Good morning'
     if (h < 17) return 'Good afternoon'
     return 'Good evening'
   }
 
   return (
-    <div style={styles.container}>
+    <div style={s.page}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        
-        * { box-sizing: border-box; }
-        
+        .dash-card {
+          transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+          cursor: pointer;
+        }
+        .dash-card:hover {
+          transform: translateY(-3px);
+        }
+        .nav-item {
+          transition: all 0.2s ease;
+          cursor: pointer;
+        }
+        .nav-item:hover {
+          color: #F0EDE8 !important;
+        }
+        .logout-btn {
+          transition: all 0.2s ease;
+        }
+        .logout-btn:hover {
+          background: rgba(224,82,82,0.12) !important;
+          color: #E05252 !important;
+          border-color: rgba(224,82,82,0.2) !important;
+        }
         @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(24px); }
+          from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes pulse-ring {
-          0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(79,110,247,0.4); }
-          70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(79,110,247,0); }
-          100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(79,110,247,0); }
-        }
-
         @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
         }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
+        @keyframes blink {
+          0%,100% { opacity: 1; }
+          50% { opacity: 0.3; }
         }
-
-        .card-hover {
-          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        .live-dot {
+          animation: blink 2s ease infinite;
         }
-
-        .card-hover:hover {
-          transform: translateY(-4px) !important;
+        .gold-shimmer {
+          background: linear-gradient(90deg, #C9A84C 0%, #E2C47A 50%, #C9A84C 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: shimmer 4s linear infinite;
         }
-
-        .nav-btn:hover {
-          background: rgba(255,255,255,0.08) !important;
-        }
-
-        .feature-arrow {
-          transition: transform 0.2s ease;
-        }
-
-        .card-hover:hover .feature-arrow {
-          transform: translateX(4px);
-        }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
       `}</style>
 
-      {/* Header */}
-      <header style={styles.header}>
-        <div style={styles.headerLeft}>
-          <div style={styles.logoMark}>
-            <span style={{fontSize: '16px'}}>⚖️</span>
-          </div>
-          <span style={styles.logoText}>LexOS</span>
-          <div style={styles.headerDivider} />
-          <span style={styles.headerSub}>Legal Intelligence Platform</span>
+      {/* ── NAVBAR ── */}
+      <nav style={s.nav}>
+        <div style={s.navLeft}>
+          <div style={s.logoMark}>⚖️</div>
+          <span style={s.logoText} className="display-font">LexOS</span>
+          <div style={s.navPipe} />
+          <span style={s.navSub}>Legal Intelligence</span>
         </div>
-
-        <nav style={styles.nav}>
-          <div style={styles.timeBadge}>
-            {time.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
-          </div>
-          <div style={styles.userChip}>
-            <div style={styles.avatarRing}>
-              <div style={styles.avatar}>
-                {user?.name?.charAt(0).toUpperCase()}
-              </div>
+        <div style={s.navRight}>
+          <span
+            className="nav-item"
+            style={s.navLink}
+            onClick={() => navigate('/lexcounsel')}
+          >
+            Counsel
+          </span>
+          <span
+            className="nav-item"
+            style={s.navLink}
+            onClick={() => navigate('/lexconnect')}
+          >
+            Connect
+          </span>
+          <div style={s.userPill}>
+            <div style={s.userAvatar}>
+              {user?.name?.charAt(0).toUpperCase()}
             </div>
-            <span style={styles.userName}>{user?.name}</span>
+            <span style={s.userNameText}>{user?.name?.split(' ')[0]}</span>
           </div>
           <button
-            className="nav-btn"
-            style={styles.logoutBtn}
+            className="logout-btn"
+            style={s.logoutBtn}
             onClick={handleLogout}
           >
             Sign out
           </button>
-        </nav>
-      </header>
+        </div>
+      </nav>
 
-      {/* Hero Section */}
-      <section style={{
-        ...styles.hero,
-        opacity: visible ? 1 : 0,
-        animation: visible ? 'fadeUp 0.6s ease forwards' : 'none'
-      }}>
-        {/* Background orbs */}
-        <div style={styles.orb1} />
-        <div style={styles.orb2} />
+      {/* ── HERO ── */}
+      <section style={s.hero}>
+        <div style={s.heroGlow1} />
+        <div style={s.heroGlow2} />
 
-        <div style={styles.heroInner}>
-          <div style={styles.greetingBadge}>
-            <span style={styles.liveIndicator} />
-            {greeting()}, {user?.name?.split(' ')[0]} 
+        <div
+          style={{
+            ...s.heroInner,
+            opacity: visible ? 1 : 0,
+            animation: visible ? 'fadeUp 0.7s ease forwards' : 'none'
+          }}
+        >
+          {/* Eyebrow */}
+          <div style={s.eyebrow}>
+            <span className="live-dot" style={s.liveDot} />
+            <span style={s.eyebrowText}>AI-Powered · India-First · Always Free</span>
           </div>
 
-          <h1 style={styles.heroTitle}>
-            Your Legal Rights,<br />
-            <span style={styles.heroGradient}>Always Within Reach</span>
+          {/* Title */}
+          <h1 style={s.heroTitle} className="display-font">
+            {greeting()},<br />
+            <span className="gold-shimmer">{user?.name?.split(' ')[0]}.</span>
           </h1>
 
-          <p style={styles.heroDesc}>
-            AI-powered legal intelligence built for every Indian citizen.
-            From police interactions to document drafting — instant, accurate, free.
+          <p style={s.heroSub}>
+            Your personal legal intelligence platform — built for every Indian citizen.
+            Know your rights, protect your interests, act with confidence.
           </p>
 
-          {/* Stats */}
-          <div style={styles.statsWrap}>
+          {/* CTA row */}
+          <div style={s.ctaRow}>
+            <button
+              className="lex-btn-primary"
+              onClick={() => navigate('/lexcounsel')}
+            >
+              Get Legal Consultation →
+            </button>
+            <button
+              className="lex-btn-secondary"
+              onClick={() => navigate('/shieldmode')}
+            >
+              🛡️ ShieldMode
+            </button>
+          </div>
+
+          {/* Stats bar */}
+          <div style={s.statsBar}>
             {[
-              { val: '9', label: 'AI Features' },
-              { val: '₹0', label: 'Cost to You' },
-              { val: '24/7', label: 'Available' },
-              { val: '100%', label: 'India-specific' },
-            ].map((s, i) => (
-              <div key={i} style={styles.statItem}>
-                <div style={styles.statVal}>{s.val}</div>
-                <div style={styles.statLabel}>{s.label}</div>
+              { v: '9', l: 'AI Features' },
+              { v: '₹0', l: 'Cost to You' },
+              { v: '24/7', l: 'Availability' },
+              { v: '100%', l: 'India-Specific' },
+            ].map((st, i) => (
+              <div key={i} style={s.statItem}>
+                {i > 0 && <div style={s.statPipe} />}
+                <div style={s.statVal}>{st.v}</div>
+                <div style={s.statLbl}>{st.l}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <main style={styles.main}>
-        <div style={styles.sectionHeader}>
-          <div style={styles.sectionEyebrow}>All Features</div>
-          <h2 style={styles.sectionTitle}>Everything you need, legally speaking</h2>
+      {/* ── FEATURES ── */}
+      <section style={s.featuresSection}>
+        <div style={s.featuresHeader}>
+          <div className="section-eyebrow">Platform Features</div>
+          <h2 style={s.featuresTitle} className="display-font">
+            Everything legal, in one place
+          </h2>
         </div>
 
-        <div style={styles.grid}>
+        <div style={s.grid}>
           {features.map((f, i) => (
             <div
               key={i}
-              className="card-hover"
+              className="dash-card"
               style={{
-                ...styles.card,
-                borderColor: hoveredCard === i ? `${f.color}40` : 'rgba(255,255,255,0.06)',
-                boxShadow: hoveredCard === i ? `0 0 0 1px ${f.color}20, 0 20px 40px ${f.color}10` : 'none',
-                animationDelay: `${i * 0.05}s`,
-                animation: visible ? `fadeUp 0.5s ease ${i * 0.05}s both` : 'none'
+                ...s.card,
+                borderColor: hovered === i ? `${f.color}35` : 'rgba(255,255,255,0.06)',
+                boxShadow: hovered === i
+                  ? `0 0 0 1px ${f.color}15, 0 24px 48px rgba(0,0,0,0.3)`
+                  : '0 2px 8px rgba(0,0,0,0.2)',
+                animationDelay: `${i * 0.04}s`,
+                animation: visible ? `fadeUp 0.5s ease ${i * 0.04}s both` : 'none'
               }}
               onClick={() => navigate(f.path)}
-              onMouseEnter={() => setHoveredCard(i)}
-              onMouseLeave={() => setHoveredCard(null)}
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
             >
-              {/* Top accent line */}
+              {/* Gold left border on hover */}
               <div style={{
-                ...styles.cardAccent,
+                position: 'absolute',
+                left: 0, top: '20%', bottom: '20%',
+                width: '2px',
                 background: f.color,
-                opacity: hoveredCard === i ? 1 : 0,
-                transition: 'opacity 0.2s ease'
+                borderRadius: '2px',
+                opacity: hovered === i ? 1 : 0,
+                transition: 'opacity 0.25s ease'
               }} />
 
-              <div style={styles.cardHead}>
+              {/* Number */}
+              <div style={s.cardNum}>{f.number}</div>
+
+              {/* Icon + Tag row */}
+              <div style={s.cardTop}>
                 <div style={{
-                  ...styles.iconBox,
-                  background: `${f.color}12`,
+                  ...s.iconBox,
+                  background: `${f.color}10`,
                   border: `1px solid ${f.color}20`
                 }}>
-                  <span style={{fontSize: '20px'}}>{f.icon}</span>
+                  <span style={{fontSize: '18px'}}>{f.icon}</span>
                 </div>
                 <span style={{
-                  ...styles.tag,
+                  ...s.cardTag,
                   color: f.color,
                   background: `${f.color}10`,
                   border: `1px solid ${f.color}20`
@@ -277,233 +311,209 @@ function Dashboard() {
                 </span>
               </div>
 
-              <h3 style={styles.cardTitle}>{f.title}</h3>
-              <p style={styles.cardDesc}>{f.desc}</p>
+              <h3 style={s.cardTitle}>{f.title}</h3>
+              <p style={s.cardDesc}>{f.desc}</p>
 
-              <div style={{...styles.cardFooter, borderColor: hoveredCard === i ? `${f.color}20` : 'rgba(255,255,255,0.05)'}}>
-                <span style={{...styles.openLabel, color: hoveredCard === i ? f.color : '#55556A'}}>
-                  Open feature
-                </span>
-                <span className="feature-arrow" style={{color: hoveredCard === i ? f.color : '#55556A', fontSize: '14px'}}>
-                  →
+              <div style={{
+                ...s.cardFooter,
+                borderTopColor: hovered === i ? `${f.color}20` : 'rgba(255,255,255,0.05)'
+              }}>
+                <span style={{
+                  color: hovered === i ? f.color : '#444440',
+                  fontSize: '12px', fontWeight: '600',
+                  transition: 'color 0.2s ease'
+                }}>
+                  Open →
                 </span>
               </div>
             </div>
           ))}
         </div>
-      </main>
+      </section>
 
-      {/* Footer */}
-      <footer style={styles.footer}>
-        <div style={styles.footerInner}>
-          <div style={styles.footerLeft}>
-            <span style={styles.footerLogo}>⚖️ LexOS</span>
-            <span style={styles.footerTagline}>AI Legal Intelligence for India</span>
-          </div>
-          <p style={styles.footerNote}>
-            ⚠️ LexOS provides AI-powered legal information based on Indian law. Not a substitute for professional legal advice.
+      {/* ── DISCLAIMER FOOTER ── */}
+      <footer style={s.footer}>
+        <div style={s.footerLine} />
+        <div style={s.footerInner}>
+          <span style={s.footerLogo} className="display-font">LexOS</span>
+          <p style={s.footerNote}>
+            ⚠️ LexOS provides AI-powered legal information based on Indian law.
+            This is not a substitute for advice from a qualified legal professional.
           </p>
+          <span style={s.footerRight}>Built for India 🇮🇳</span>
         </div>
       </footer>
     </div>
   )
 }
 
-const styles = {
-  container: {
+const s = {
+  page: {
     minHeight: '100vh',
-    background: '#080910',
-    fontFamily: "'Inter', -apple-system, sans-serif",
-    color: '#E8E8EE',
-    overflowX: 'hidden'
+    background: '#0D0D0D',
+    fontFamily: "'Inter', sans-serif",
+    color: '#F0EDE8'
   },
 
-  // Header
-  header: {
+  // Nav
+  nav: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     padding: '0 40px', height: '64px',
-    borderBottom: '1px solid rgba(255,255,255,0.05)',
-    background: 'rgba(8,9,16,0.9)',
+    borderBottom: '1px solid rgba(255,255,255,0.06)',
+    background: 'rgba(13,13,13,0.97)',
     backdropFilter: 'blur(20px)',
     position: 'sticky', top: 0, zIndex: 100
   },
-  headerLeft: { display: 'flex', alignItems: 'center', gap: '12px' },
+  navLeft: { display: 'flex', alignItems: 'center', gap: '12px' },
   logoMark: {
     width: '32px', height: '32px', borderRadius: '8px',
-    background: 'linear-gradient(135deg, #4F6EF7, #7C5CFC)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center'
+    background: 'linear-gradient(135deg, #C9A84C, #E2C47A)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '16px'
   },
   logoText: {
-    fontSize: '18px', fontWeight: '800',
-    background: 'linear-gradient(135deg, #E8E8EE 40%, #94abff)',
-    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
+    fontSize: '20px', fontWeight: '700', letterSpacing: '-0.02em',
+    background: 'linear-gradient(135deg, #F0EDE8, #C9A84C)',
+    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text'
   },
-  headerDivider: { width: '1px', height: '20px', background: 'rgba(255,255,255,0.08)' },
-  headerSub: { fontSize: '12px', color: '#3a3a55', fontWeight: '500' },
-  nav: { display: 'flex', alignItems: 'center', gap: '12px' },
-  timeBadge: {
-    fontSize: '12px', color: '#55556A', fontWeight: '600',
-    fontVariantNumeric: 'tabular-nums', letterSpacing: '0.05em'
-  },
-  userChip: {
+  navPipe: { width: '1px', height: '18px', background: 'rgba(255,255,255,0.08)' },
+  navSub: { fontSize: '12px', color: '#444440', fontWeight: '500' },
+  navRight: { display: 'flex', alignItems: 'center', gap: '20px' },
+  navLink: { fontSize: '13px', color: '#888880', fontWeight: '500' },
+  userPill: {
     display: 'flex', alignItems: 'center', gap: '8px',
     background: 'rgba(255,255,255,0.03)',
     border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: '100px', padding: '4px 12px 4px 4px'
+    borderRadius: '100px', padding: '4px 14px 4px 4px'
   },
-  avatarRing: {
+  userAvatar: {
     width: '28px', height: '28px', borderRadius: '50%',
-    background: 'linear-gradient(135deg, #4F6EF7, #7C5CFC)',
+    background: 'linear-gradient(135deg, #C9A84C, #E2C47A)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    animation: 'pulse-ring 3s infinite'
+    fontSize: '12px', fontWeight: '700', color: '#0D0D0D'
   },
-  avatar: {
-    width: '24px', height: '24px', borderRadius: '50%',
-    background: 'linear-gradient(135deg, #4F6EF7, #7C5CFC)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '11px', fontWeight: '700', color: '#fff'
-  },
-  userName: { fontSize: '13px', color: '#b4b4c4', fontWeight: '500' },
+  userNameText: { fontSize: '13px', color: '#B8B5B0', fontWeight: '500' },
   logoutBtn: {
     background: 'transparent',
     border: '1px solid rgba(255,255,255,0.08)',
-    color: '#55556A', padding: '7px 14px',
-    borderRadius: '8px', fontSize: '12px',
-    fontWeight: '500', cursor: 'pointer',
-    transition: 'all 0.2s ease'
+    color: '#444440', padding: '7px 14px',
+    borderRadius: '8px', fontSize: '12px', fontWeight: '500'
   },
 
   // Hero
   hero: {
     position: 'relative', overflow: 'hidden',
-    padding: '80px 40px 64px',
+    padding: '100px 40px 80px',
     borderBottom: '1px solid rgba(255,255,255,0.05)',
   },
-  orb1: {
-    position: 'absolute', top: '-100px', left: '20%',
+  heroGlow1: {
+    position: 'absolute', top: '-200px', left: '-100px',
+    width: '600px', height: '600px', borderRadius: '50%',
+    background: 'radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 65%)',
+    pointerEvents: 'none'
+  },
+  heroGlow2: {
+    position: 'absolute', bottom: '-200px', right: '-100px',
     width: '500px', height: '500px', borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(79,110,247,0.08) 0%, transparent 70%)',
+    background: 'radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 65%)',
     pointerEvents: 'none'
   },
-  orb2: {
-    position: 'absolute', bottom: '-150px', right: '10%',
-    width: '400px', height: '400px', borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(124,92,252,0.06) 0%, transparent 70%)',
-    pointerEvents: 'none'
-  },
-  heroInner: { position: 'relative', maxWidth: '720px', margin: '0 auto', textAlign: 'center' },
-  greetingBadge: {
+  heroInner: { maxWidth: '680px', position: 'relative' },
+  eyebrow: {
     display: 'inline-flex', alignItems: 'center', gap: '8px',
-    background: 'rgba(79,110,247,0.08)',
-    border: '1px solid rgba(79,110,247,0.15)',
-    color: '#94abff', fontSize: '13px', fontWeight: '500',
-    padding: '6px 16px', borderRadius: '100px', marginBottom: '28px'
+    background: 'rgba(201,168,76,0.08)',
+    border: '1px solid rgba(201,168,76,0.15)',
+    borderRadius: '100px', padding: '5px 14px',
+    marginBottom: '28px'
   },
-  liveIndicator: {
+  liveDot: {
     width: '6px', height: '6px', borderRadius: '50%',
-    background: '#3FC87A', display: 'inline-block',
-    boxShadow: '0 0 6px #3FC87A', animation: 'pulse-ring 2s infinite'
+    background: '#C9A84C', display: 'inline-block'
   },
+  eyebrowText: { fontSize: '11px', fontWeight: '600', color: '#C9A84C', letterSpacing: '0.08em' },
   heroTitle: {
-    fontSize: 'clamp(36px, 5vw, 62px)',
-    fontWeight: '900', lineHeight: '1.08',
+    fontSize: 'clamp(40px, 6vw, 72px)',
+    fontWeight: '700', lineHeight: '1.05',
     letterSpacing: '-0.03em', marginBottom: '20px',
-    color: '#E8E8EE'
+    color: '#F0EDE8'
   },
-  heroGradient: {
-    background: 'linear-gradient(135deg, #4F6EF7 0%, #7C5CFC 50%, #94abff 100%)',
-    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-    backgroundSize: '200% auto', animation: 'shimmer 3s linear infinite'
+  heroSub: {
+    fontSize: '16px', color: '#888880', lineHeight: '1.75',
+    marginBottom: '36px', maxWidth: '520px'
   },
-  heroDesc: {
-    fontSize: '17px', color: '#888898', lineHeight: '1.7',
-    marginBottom: '40px', fontWeight: '400'
+  ctaRow: { display: 'flex', gap: '12px', marginBottom: '48px', flexWrap: 'wrap' },
+  statsBar: {
+    display: 'flex', alignItems: 'center', gap: '0',
+    background: 'rgba(255,255,255,0.02)',
+    border: '1px solid rgba(255,255,255,0.06)',
+    borderRadius: '14px', padding: '18px 0',
+    width: 'fit-content'
   },
-  statsWrap: {
-    display: 'inline-grid', gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: '0', background: 'rgba(255,255,255,0.02)',
-    border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: '16px', overflow: 'hidden'
-  },
-  statItem: {
-    padding: '20px 28px', textAlign: 'center',
-    borderRight: '1px solid rgba(255,255,255,0.06)'
-  },
-  statVal: {
-    fontSize: '26px', fontWeight: '800',
-    color: '#E8E8EE', letterSpacing: '-0.02em', lineHeight: '1'
-  },
-  statLabel: { fontSize: '11px', color: '#55556A', marginTop: '4px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.08em' },
+  statItem: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 28px', position: 'relative' },
+  statPipe: { position: 'absolute', left: 0, top: '10%', bottom: '10%', width: '1px', background: 'rgba(255,255,255,0.06)' },
+  statVal: { fontSize: '24px', fontWeight: '800', color: '#F0EDE8', lineHeight: '1', letterSpacing: '-0.02em' },
+  statLbl: { fontSize: '11px', color: '#444440', marginTop: '4px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.08em' },
 
   // Features
-  main: { padding: '56px 40px' },
-  sectionHeader: { marginBottom: '32px' },
-  sectionEyebrow: {
-    fontSize: '11px', fontWeight: '700', color: '#4F6EF7',
-    letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px'
-  },
-  sectionTitle: {
-    fontSize: '22px', fontWeight: '700', color: '#E8E8EE',
-    letterSpacing: '-0.01em'
+  featuresSection: { padding: '64px 40px 80px' },
+  featuresHeader: { marginBottom: '40px' },
+  featuresTitle: {
+    fontSize: '32px', fontWeight: '700',
+    color: '#F0EDE8', letterSpacing: '-0.02em', marginTop: '8px'
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))',
-    gap: '14px'
+    gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+    gap: '12px'
   },
   card: {
-    background: '#0f1018',
+    background: '#111111',
     border: '1px solid rgba(255,255,255,0.06)',
     borderRadius: '16px', padding: '22px',
-    cursor: 'pointer', position: 'relative',
-    overflow: 'hidden'
+    position: 'relative', overflow: 'hidden'
   },
-  cardAccent: {
-    position: 'absolute', top: 0, left: 0, right: 0,
-    height: '2px', borderRadius: '16px 16px 0 0'
+  cardNum: {
+    font: '500 11px/1 "JetBrains Mono", monospace',
+    color: '#2A2A28', marginBottom: '16px',
+    letterSpacing: '0.05em'
   },
-  cardHead: {
+  cardTop: {
     display: 'flex', justifyContent: 'space-between',
-    alignItems: 'flex-start', marginBottom: '16px'
+    alignItems: 'center', marginBottom: '14px'
   },
   iconBox: {
-    width: '42px', height: '42px', borderRadius: '11px',
+    width: '40px', height: '40px', borderRadius: '10px',
     display: 'flex', alignItems: 'center', justifyContent: 'center'
   },
-  tag: {
+  cardTag: {
     fontSize: '10px', fontWeight: '700',
     padding: '3px 9px', borderRadius: '100px',
-    letterSpacing: '0.06em', textTransform: 'uppercase'
+    letterSpacing: '0.08em', textTransform: 'uppercase'
   },
   cardTitle: {
     fontSize: '15px', fontWeight: '700',
-    color: '#E8E8EE', marginBottom: '8px', letterSpacing: '-0.01em'
+    color: '#F0EDE8', marginBottom: '8px', letterSpacing: '-0.01em'
   },
   cardDesc: {
-    fontSize: '13px', color: '#666680',
-    lineHeight: '1.6', marginBottom: '20px'
+    fontSize: '13px', color: '#666660',
+    lineHeight: '1.65', marginBottom: '18px'
   },
   cardFooter: {
-    display: 'flex', justifyContent: 'space-between',
-    alignItems: 'center', paddingTop: '14px',
+    paddingTop: '14px',
     borderTop: '1px solid'
   },
-  openLabel: { fontSize: '12px', fontWeight: '600', transition: 'color 0.2s ease' },
 
   // Footer
-  footer: {
-    borderTop: '1px solid rgba(255,255,255,0.05)',
-    padding: '24px 40px'
-  },
+  footer: { padding: '0 40px 40px' },
+  footerLine: { height: '1px', background: 'rgba(255,255,255,0.05)', marginBottom: '24px' },
   footerInner: {
-    display: 'flex', justifyContent: 'space-between',
-    alignItems: 'center', flexWrap: 'wrap', gap: '12px'
+    display: 'flex', alignItems: 'center',
+    justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px'
   },
-  footerLeft: { display: 'flex', alignItems: 'center', gap: '12px' },
-  footerLogo: { fontSize: '14px', fontWeight: '700', color: '#E8E8EE' },
-  footerTagline: { fontSize: '12px', color: '#3a3a55' },
-  footerNote: { fontSize: '11px', color: '#3a3a55', maxWidth: '480px', lineHeight: '1.5' }
+  footerLogo: { fontSize: '16px', fontWeight: '700', color: '#C9A84C' },
+  footerNote: { fontSize: '11px', color: '#333330', maxWidth: '460px', lineHeight: '1.6' },
+  footerRight: { fontSize: '12px', color: '#333330' }
 }
 
 export default Dashboard
-
