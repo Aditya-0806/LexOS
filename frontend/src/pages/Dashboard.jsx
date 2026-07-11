@@ -275,7 +275,7 @@ export default function Dashboard() {
           <div style={s.hero}>
             {/* Supreme Court BG */}
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Supreme_Court_of_India_-_2011.jpg/1280px-Supreme_Court_of_India_-_2011.jpg"
+             src="https://images.unsplash.com/photo-1589994965851-a8f479c573a9?w=1400&q=80"
               alt="Supreme Court of India"
               style={s.heroImg}
             />
