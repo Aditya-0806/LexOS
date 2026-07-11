@@ -21,9 +21,7 @@ export default function PageHeader({ title, icon }) {
       `}</style>
       <header style={s.header}>
         <div style={s.left}>
-          <button className="back-btn" onClick={() => navigate('/dashboard')}>
-            ← Back
-          </button>
+          <button className="back-btn" onClick={() => navigate('/dashboard')}>← Back</button>
           <div style={s.logoWrap}>
             <div style={s.logoIcon}>⚖️</div>
             <span style={s.logoText}>LexOS</span>
