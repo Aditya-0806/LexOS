@@ -6,7 +6,7 @@ const { analyseDocument } = require('../controllers/forgescanController');
 
 const upload = multer({
   dest: 'uploads/',
-  limits: { fileSize: 15 * 1024 * 1024 }, // 5MB max
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
   fileFilter: (req, file, cb) => {
   if (
     file.mimetype === 'application/pdf' ||
@@ -24,3 +24,4 @@ const upload = multer({
 router.post('/analyse', protect, upload.single('document'), analyseDocument);
 
 module.exports = router;
+
