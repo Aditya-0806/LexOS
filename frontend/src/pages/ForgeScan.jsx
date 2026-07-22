@@ -34,7 +34,7 @@ function ForgeScan() {
     try {
       const token = localStorage.getItem('lexos_token')
       const res = await axios.post(
-        'http://localhost:5000/api/forgescan/analyse',
+  'https://lexos-backend-ek2i.onrender.com/api/forgescan/analyse',
         formData,
         {
           headers: {
