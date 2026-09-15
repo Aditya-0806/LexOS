@@ -1,8 +1,13 @@
+const express = require('express');
+const router = express.Router();
+const { protect } = require('../middleware/authMiddleware');
+
 router.post('/analyse-text', protect, async (req, res) => {
   try {
-    const { text } = req.body
+    const { text } = req.body;
+
     if (!text || text.trim().length < 20) {
-      return res.status(400).json({ message: 'Text too short' })
+      return res.status(400).json({ message: 'Text too short' });
     }
 
     const prompt = `You are a legal document analyst specialising in Indian law. Analyse this document for red flags, suspicious clauses, missing legally required sections, and one-sided terms.
@@ -31,7 +36,7 @@ RISK LEVEL: (Low / Medium / High)
 💡 RECOMMENDATIONS:
 - List specific actions the person should take
 
-Keep each point concise and in plain English. No legal jargon.`
+Keep each point concise and in plain English. No legal jargon.`;
 
     const response = await fetch(
       'https://api.groq.com/openai/v1/chat/completions',
@@ -39,19 +44,34 @@ Keep each point concise and in plain English. No legal jargon.`
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
         },
         body: JSON.stringify({
           model: 'llama-3.3-70b-versatile',
           messages: [{ role: 'user', content: prompt }],
-          max_tokens: 1500
-        })
+          max_tokens: 1500,
+        }),
       }
-    )
-    const data = await response.json()
-    const analysis = data.choices[0].message.content
-    res.json({ analysis })
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(500).json({
+        message: 'Groq API Error',
+        error: data,
+      });
+    }
+
+    res.json({
+      analysis: data.choices[0].message.content,
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message })
+    res.status(500).json({
+      message: 'Server error',
+      error: error.message,
+    });
   }
-})
+});
+
+module.exports = router;
